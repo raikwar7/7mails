@@ -11,7 +11,7 @@ from sqlalchemy.orm import sessionmaker,declarative_base
 
 # MySQL connection URL
 # Format: mysql+pymysql://username:password@host/database_name
-DATABASE_URL="mysql+pymysql://root:Raikwar7@localhost/google_login"
+DATABASE_URL="postgresql+psycopg://postgres:Raikwar7$@localhost/sevenmails"
 
 # Create database engine
 engine=create_engine(DATABASE_URL)
