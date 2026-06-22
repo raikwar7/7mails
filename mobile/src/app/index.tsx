@@ -1,98 +1,191 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React from "react";
+import {
+  SafeAreaView,
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
+import { router } from "expo-router";
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
-
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
-  return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
+import Navbar from "../components/Navbar";
+ 
 
 export default function HomeScreen() {
   return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
+    <SafeAreaView style={styles.container}>
+      <Navbar />
 
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
+      <ScrollView contentContainerStyle={styles.content}>
+        <Text style={styles.title}>
+          Smart Mail Manager
+        </Text>
 
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
+        <Text style={styles.subtitle}>
+          Organize, filter, summarize, and manage your emails efficiently with
+          AI-powered automation. Connect Gmail securely and take control of your
+          inbox like never before.
+        </Text>
 
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
+        <View style={styles.featureContainer}>
+          <Text style={styles.feature}>
+            📩 Fetch Sent & Received Mails
+          </Text>
+
+          <Text style={styles.feature}>
+            🔍 Filter by Sender & Date
+          </Text>
+
+          <Text style={styles.feature}>
+            🤖 AI Email Summaries
+          </Text>
+
+          <Text style={styles.feature}>
+            📊 Mail Dashboard Analytics
+          </Text>
+        </View>
+
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={styles.primaryButton}
+            onPress={() => router.push("/")}
+          >
+            <Text style={styles.primaryText}>Get Started</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.secondaryButton}
+            onPress={() => router.push("/login/index")}
+          >
+            <Text style={styles.secondaryText}>
+              View Dashboard
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.statsContainer}>
+          <View style={styles.statBox}>
+            <Text style={styles.statNumber}>20+</Text>
+            <Text style={styles.statLabel}>Emails Per Fetch</Text>
+          </View>
+
+          <View style={styles.statBox}>
+            <Text style={styles.statNumber}>100%</Text>
+            <Text style={styles.statLabel}>Secure OAuth Login</Text>
+          </View>
+
+          <View style={styles.statBox}>
+            <Text style={styles.statNumber}>AI</Text>
+            <Text style={styles.statLabel}>Smart Summaries</Text>
+          </View>
+
+          <View style={styles.statBox}>
+            <Text style={styles.statNumber}>24/7</Text>
+            <Text style={styles.statLabel}>Mail Access</Text>
+          </View>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
+    backgroundColor: "#1E3A8A",
   },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
+
+  content: {
+    alignItems: "center",
+    paddingHorizontal: 25,
+    paddingBottom: 50,
   },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
-  },
+
   title: {
-    textAlign: 'center',
+    fontSize: 40,
+    fontWeight: "bold",
+    color: "#fff",
+    textAlign: "center",
+    marginTop: 50,
   },
-  code: {
-    textTransform: 'uppercase',
+
+  subtitle: {
+    color: "#DCE7FF",
+    textAlign: "center",
+    fontSize: 17,
+    marginTop: 20,
+    lineHeight: 28,
   },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
+
+  featureContainer: {
+    marginTop: 35,
+    width: "100%",
+  },
+
+  feature: {
+    backgroundColor: "rgba(255,255,255,0.15)",
+    color: "#fff",
+    padding: 15,
+    borderRadius: 30,
+    marginBottom: 15,
+    textAlign: "center",
+    overflow: "hidden",
+  },
+
+  buttonContainer: {
+    flexDirection: "row",
+    marginTop: 35,
+    gap: 15,
+  },
+
+  primaryButton: {
+    backgroundColor: "#fff",
+    paddingHorizontal: 22,
+    paddingVertical: 14,
+    borderRadius: 12,
+  },
+
+  primaryText: {
+    color: "#1E3A8A",
+    fontWeight: "bold",
+  },
+
+  secondaryButton: {
+    borderWidth: 1,
+    borderColor: "#fff",
+    paddingHorizontal: 22,
+    paddingVertical: 14,
+    borderRadius: 12,
+  },
+
+  secondaryText: {
+    color: "#fff",
+    fontWeight: "bold",
+  },
+
+  statsContainer: {
+    marginTop: 55,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+  },
+
+  statBox: {
+    width: 150,
+    alignItems: "center",
+    marginBottom: 30,
+  },
+
+  statNumber: {
+    color: "#fff",
+    fontSize: 30,
+    fontWeight: "bold",
+  },
+
+  statLabel: {
+    color: "#DCE7FF",
+    textAlign: "center",
+    marginTop: 5,
   },
 });
