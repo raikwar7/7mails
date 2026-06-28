@@ -6,12 +6,11 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   StyleSheet,
+  Platform,
 } from "react-native";
 import * as WebBrowser from "expo-web-browser";
 
-const API_BASE_URL = "http://192.168.1.10:8000";
-// Example:
-// const API_BASE_URL = "http://192.168.1.10:8000";
+const API_BASE_URL = "http://192.168.1.45:8000";
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
@@ -20,13 +19,17 @@ export default function Login() {
     try {
       setLoading(true);
 
-      const redirectUrl = `${API_BASE_URL}/auth/google/login`;
+      // Detect platform automatically
+      const platform = Platform.OS === "ios" ? "ios" : "android";
 
-      await WebBrowser.openBrowserAsync(redirectUrl);
+      const loginUrl = `${API_BASE_URL}/auth/google/login?platform=${platform}`;
 
-      setLoading(false);
-    } catch (error) {
-      console.log("OAuth Failed:", error);
+      console.log("Opening:", loginUrl);
+
+      await WebBrowser.openBrowserAsync(loginUrl);
+    } catch (err) {
+      console.log("Google Login Error:", err);
+    } finally {
       setLoading(false);
     }
   };
@@ -34,11 +37,12 @@ export default function Login() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.card}>
-        <Text style={styles.title}>Welcome Back</Text>
+        <Text style={styles.title}>
+          Smart Mail Manager
+        </Text>
 
         <Text style={styles.subtitle}>
-          Sign in securely with your Google account to continue using Smart Mail
-          Manager.
+          Login with your Google account.
         </Text>
 
         <TouchableOpacity
@@ -54,10 +58,6 @@ export default function Login() {
             </Text>
           )}
         </TouchableOpacity>
-
-        <Text style={styles.note}>
-          Secure OAuth Authentication
-        </Text>
       </View>
     </SafeAreaView>
   );
@@ -68,58 +68,39 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#0F172A",
     justifyContent: "center",
-    paddingHorizontal: 25,
+    padding: 20,
   },
 
   card: {
     backgroundColor: "#1E293B",
-    borderRadius: 20,
-    padding: 30,
-    alignItems: "center",
-
-    shadowColor: "#000",
-    shadowOpacity: 0.25,
-    shadowRadius: 10,
-    shadowOffset: {
-      width: 0,
-      height: 5,
-    },
-
-    elevation: 8,
+    borderRadius: 15,
+    padding: 25,
   },
 
   title: {
-    fontSize: 32,
+    color: "white",
+    fontSize: 28,
     fontWeight: "bold",
-    color: "#FFFFFF",
+    textAlign: "center",
   },
 
   subtitle: {
     color: "#CBD5E1",
-    fontSize: 16,
     textAlign: "center",
-    marginTop: 15,
-    lineHeight: 24,
+    marginTop: 10,
+    marginBottom: 25,
   },
 
   googleButton: {
-    marginTop: 35,
     backgroundColor: "#2563EB",
-    width: "100%",
-    paddingVertical: 16,
-    borderRadius: 14,
-    alignItems: "center",
+    padding: 16,
+    borderRadius: 10,
   },
 
   buttonText: {
-    color: "#FFFFFF",
-    fontSize: 16,
+    color: "white",
+    textAlign: "center",
     fontWeight: "bold",
-  },
-
-  note: {
-    marginTop: 20,
-    color: "#94A3B8",
-    fontSize: 14,
+    fontSize: 16,
   },
 });

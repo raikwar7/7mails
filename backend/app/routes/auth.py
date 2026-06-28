@@ -25,59 +25,100 @@ def get_db():
         yield db
     finally:
         db.close()
-    
-@router.get("/google/login")
-async def google_login(request:Request):
-    """
-    Step 1:
-    Redirect user to Google login page
-    """
-    redirect_ui="http://localhost:8000/auth/google/callback"
-    return await oauth.google.authorize_redirect(request,redirect_ui,access_type="offline",
-        prompt="consent")
+from fastapi import Request
+from app.configurations.auth import settings
 
-@router.get("/google/callback")
-async def google_callback(request:Request,db:Session=Depends(get_db)):
+
+@router.get("/google/login")
+async def google_login(
+    request: Request,
+    platform: str = "web"
+):
+    """ Redirect user to google login """
     """
+    platform can be:
+        web (default)
+        android
+        ios
+    """
+
+    request.session["platform"] = platform.lower()
+
+    redirect_uri = (
+        f"{settings.BACKEND_URL}/auth/google/callback"
+    )
+
+    return await oauth.google.authorize_redirect(
+        request,
+        redirect_uri,
+        access_type="offline",
+        prompt="consent",
+    )
+
+
+"""
     Step 2:
     Google redirects back to this endpoint after login
 
     - Fetch user info from Google
     - Store user in DB if not exists
     - Generate JWT token
-    """
-    token=await oauth.google.authorize_access_token(request)
-    access_token=token.get("access_token")
-    refresh_token=token.get("refresh_token")
+  from app.config import settings
 
-    user_info=token.get("userinfo")
-    email=user_info.get("email")
+"""
+@router.get("/google/callback")
+async def google_callback(
+    request: Request,
+    db: Session = Depends(get_db)
+):
+    
 
-    #chekc if user already exist
+    token = await oauth.google.authorize_access_token(request)
 
-    user=db.query(User).filter(User.email==email).first()
+    access_token = token.get("access_token")
+    refresh_token = token.get("refresh_token")
+
+    user_info = token.get("userinfo")
+
+    email = user_info.get("email")
+
+    user = db.query(User).filter(
+        User.email == email
+    ).first()
+
     if not user:
-        user=User(email=email,provider="google",access_token=access_token,refresh_token=refresh_token)
+
+        user = User(
+            email=email,
+            provider="google",
+            access_token=access_token,
+            refresh_token=refresh_token,
+        )
+
         db.add(user)
-        print("REFRESH TOKEN:", refresh_token)
-        db.commit()
+
     else:
-        # 🔥 VERY IMPORTANT: update tokens
+
         user.access_token = access_token
 
-        # Only update refresh_token if Google sends it
         if refresh_token:
             user.refresh_token = refresh_token
-            print("REFRESH TOKEN:", refresh_token)
-        db.commit() 
 
+    db.commit()
 
-    jwt_token=create_jwt(email)
-# Frontend URL (Vite runs on 5173)
-    frontend_url = "http://localhost:5173"
+    jwt_token = create_jwt(email)
 
-    # Redirect to frontend with token
+    platform = request.session.get("platform", "web")
+
+    if platform == "android":
+        redirect_url = settings.ANDROID_REDIRECT
+
+    elif platform == "ios":
+        redirect_url = settings.IOS_REDIRECT
+
+    else:
+        redirect_url = f"{settings.WEB_URL}/login-success"
+
     return RedirectResponse(
-        url=f"{frontend_url}/login-success?token={jwt_token}"
+        url=f"{redirect_url}?token={jwt_token}"
     )
-

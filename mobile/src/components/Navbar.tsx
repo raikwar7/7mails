@@ -10,7 +10,7 @@ export default function Navbar() {
 
       <TouchableOpacity
         style={styles.loginBtn}
-        onPress={() => router.push("/login/index")}
+        onPress={() => router.push("/login")}
       >
         <Text style={styles.loginText}>Login</Text>
       </TouchableOpacity>
