@@ -66,9 +66,4 @@ class NumberInput(BaseModel):
 def root():
     return {"message": "Backend is running 🚀"}
 
-
-@app.post("/double")
-def double_number(data: NumberInput):
-    return {
-        "result": data.number * 2
-    }
+ 
