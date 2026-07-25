@@ -33,14 +33,24 @@ app.add_middleware(
 )
 
 # 🌍 CORS
+# Session Middleware
+app.add_middleware(
+    same_site="none",
+    https_only=True,
+    max_age=60 * 60,
+)
+
+# CORS Middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # frontend URL (not "*")
+    allow_origins=[
+        "http://localhost:5173",
+        "https://mail-manager-0pbd.onrender.com",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 # Include auth routes
 app.include_router(router)
 app.include_router(admin.router)
