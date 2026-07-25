@@ -28,18 +28,14 @@ app = FastAPI()
 
 # 🔐 Add Session Middleware (REQUIRED FOR OAUTH)
 app.add_middleware(
-    SessionMiddleware,
-    secret_key=os.getenv("SESSION_SECRET", "dev-secret-key"),  # use .env in prod
-)
-
-# 🌍 CORS
-# Session Middleware
-app.add_middleware(
+     SessionMiddleware,
+    secret_key=os.getenv("SESSION_SECRET"),
     same_site="none",
     https_only=True,
-    max_age=60 * 60,
+    max_age=60 * 60,  # use .env in prod
 )
 
+ 
 # CORS Middleware
 app.add_middleware(
     CORSMiddleware,
