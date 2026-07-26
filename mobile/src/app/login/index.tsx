@@ -10,7 +10,8 @@ import {
 } from "react-native";
 import * as WebBrowser from "expo-web-browser";
 
-const API_BASE_URL = "http://192.168.1.45:8000";
+
+const API_BASE_URL = "https://mail-manager-0pbd.onrender.com";
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
