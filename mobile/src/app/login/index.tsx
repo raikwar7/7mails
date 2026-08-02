@@ -9,6 +9,7 @@ import {
   Platform,
 } from "react-native";
 import * as WebBrowser from "expo-web-browser";
+import * as Linking from "expo-linking";
 
 
 const API_BASE_URL = "https://mail-manager-0pbd.onrender.com";
@@ -26,8 +27,16 @@ export default function Login() {
       const loginUrl = `${API_BASE_URL}/auth/google/login?platform=${platform}`;
 
       console.log("Opening:", loginUrl);
+ 
 
-      await WebBrowser.openBrowserAsync(loginUrl);
+const redirectUri = Linking.createURL("login-success");
+
+const result = await WebBrowser.openAuthSessionAsync(
+    loginUrl,
+    redirectUri
+);
+
+console.log(result);
     } catch (err) {
       console.log("Google Login Error:", err);
     } finally {

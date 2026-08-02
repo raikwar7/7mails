@@ -3,6 +3,8 @@
 SmartMail AI is a full‑stack, AI‑powered email management platform designed to **send, track, categorize, and follow up on emails automatically**. It is especially useful for **job applications, cold emailing, and business outreach**, combining **LLMs, automation, and system‑design best practices**.
 
 ---
+venv\Scripts\Activate.ps1 -- command to run venv
+
 
 ## 🚀 Problem Statement
 
